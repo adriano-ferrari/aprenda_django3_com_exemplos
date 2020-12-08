@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super(PublishedManager, self).get_queryset().filter(status='published')
+        return super().get_queryset().filter(status='published')
 
 
 class Post(models.Model):
@@ -19,8 +19,8 @@ class Post(models.Model):
     slug = models.SlugField(max_length=250,
                             unique_for_date='publish')
     author = models.ForeignKey(User,
-                               on_delete=models.CASCADE,
-                               related_name='blog_posts')
+                              on_delete=models.CASCADE,
+                              related_name='blog_posts')
     body = models.TextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
@@ -29,10 +29,9 @@ class Post(models.Model):
                               choices=STATUS_CHOICES,
                               default='draft')
 
-    objects = models.Manager() # o gerenciador default
-    published = PublishedManager() # nosso gerenciador personalizado
+    objects = models.Manager() # The default manager.
+    published = PublishedManager() # Our custom manager.
     tags = TaggableManager()
-
 
     class Meta:
         ordering = ('-publish',)
@@ -44,8 +43,7 @@ class Post(models.Model):
         return reverse('blog:post_detail',
                        args=[self.publish.year,
                              self.publish.month,
-                             self.publish.day,
-                             self.slug])
+                             self.publish.day, self.slug])
 
 
 class Comment(models.Model):
@@ -58,7 +56,6 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
-
 
     class Meta:
         ordering = ('created',)
